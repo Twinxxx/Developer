@@ -1,4 +1,3 @@
-// pages/Dashboard.tsx
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -41,11 +40,28 @@ export default function Dashboard() {
     }
   }
 
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      alert("Failed to log out.");
+    } else {
+      navigate("/login");
+    }
+  }
+
   return (
     <div>
-      <h2>Your Blogs</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2>Your Blogs</h2>
+        <button onClick={handleLogout} style={{ backgroundColor: "red", color: "white", padding: "8px 12px", borderRadius: "4px", border: "none" }}>
+          Logout
+        </button>
+      </div>
+
       <button onClick={() => navigate("/create")}>Create New Blog</button>
+
       {blogs.length === 0 && <p>No blogs yet.</p>}
+
       {blogs.map((blog) => (
         <div key={blog.id} style={{ borderBottom: "1px solid gray", margin: "1rem 0" }}>
           <h3>{blog.title}</h3>
