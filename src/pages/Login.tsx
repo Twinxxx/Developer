@@ -10,12 +10,16 @@ export default function Login() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       alert("Login failed: " + error.message);
     } else {
-      navigate("/"); // ✅ Go to dashboard
+      navigate("/");
     }
   }
 
@@ -41,7 +45,7 @@ export default function Login() {
       </form>
 
       <p>
-        Don't have an account? <Link to="/register">Register</Link>
+        Don’t have an account? <Link to="/register">Register</Link>
       </p>
     </div>
   );

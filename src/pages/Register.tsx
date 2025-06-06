@@ -10,6 +10,7 @@ export default function Register() {
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -18,7 +19,10 @@ export default function Register() {
     if (error) {
       alert("Registration failed: " + error.message);
     } else {
-      alert("Check your email for verification link.");
+      // 🔐 Force logout just in case Supabase auto-logs in
+      await supabase.auth.signOut();
+
+      alert("Registration successful! Check your email for a verification link.");
       navigate("/login");
     }
   }
