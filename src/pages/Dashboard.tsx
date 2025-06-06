@@ -1,3 +1,5 @@
+// src/pages/Dashboard.tsx
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +16,10 @@ export default function Dashboard() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
   async function fetchBlogs() {
     const { data, error } = await supabase
       .from("blogs")
@@ -21,15 +27,11 @@ export default function Dashboard() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error("Error fetching blogs:", error);
     } else {
       setBlogs(data as Blog[]);
     }
   }
-
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
 
   async function handleDelete(id: string) {
     const { error } = await supabase.from("blogs").delete().eq("id", id);
@@ -50,26 +52,29 @@ export default function Dashboard() {
   }
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2>Your Blogs</h2>
-        <button onClick={handleLogout} style={{ backgroundColor: "red", color: "white", padding: "8px 12px", borderRadius: "4px", border: "none" }}>
-          Logout
-        </button>
-      </div>
-
-      <button onClick={() => navigate("/create")}>Create New Blog</button>
+    <div className="dashboard-container">
+      <button className="create-button" onClick={() => navigate("/create")}>
+        Create New Blog
+      </button>
 
       {blogs.length === 0 && <p>No blogs yet.</p>}
 
       {blogs.map((blog) => (
-        <div key={blog.id} style={{ borderBottom: "1px solid gray", margin: "1rem 0" }}>
+        <div key={blog.id} className="blog-card">
           <h3>{blog.title}</h3>
           <p>{blog.content}</p>
-          <button onClick={() => navigate(`/edit/${blog.id}`)}>Edit</button>{" "}
-          <button onClick={() => handleDelete(blog.id)}>Delete</button>
+          <div className="blog-actions">
+            <button onClick={() => navigate(`/edit/${blog.id}`)}>Edit</button>
+            <button onClick={() => handleDelete(blog.id)}>Delete</button>
+          </div>
         </div>
       ))}
+
+      <div className="logout-container">
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

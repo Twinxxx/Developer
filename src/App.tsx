@@ -1,4 +1,4 @@
-// App.tsx
+// src/App.tsx
 import React, { useEffect, ReactNode } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "./store";
@@ -8,7 +8,6 @@ import { RootState } from "./store";
 
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Logout from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
 import CreateBlog from "./pages/CreateBlog";
 import EditBlog from "./pages/EditBlog";
@@ -33,9 +32,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/create" element={<ProtectedRoute><CreateBlog /></ProtectedRoute>} />
         <Route path="/edit/:id" element={<ProtectedRoute><EditBlog /></ProtectedRoute>} />
@@ -52,4 +50,14 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function PublicRoute({ children }: { children: ReactNode }) {
+  const user = useSelector((state: RootState) => state.auth.user);
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+}
+
 export default App;
+
+
