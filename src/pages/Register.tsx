@@ -19,10 +19,9 @@ export default function Register() {
     if (error) {
       alert("Registration failed: " + error.message);
     } else {
-      // 🔐 Force logout just in case Supabase auto-logs in
       await supabase.auth.signOut();
 
-      alert("Registration successful! Check your email for a verification link.");
+      alert("Registration successful!");
       navigate("/login");
     }
   }
